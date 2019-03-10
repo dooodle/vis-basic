@@ -33,7 +33,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	http.HandleFunc("/mondial/country.csv", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/mondial/economy.csv", func(w http.ResponseWriter, r *http.Request) {
 		resp, err := http.Get(*queryService + "/mondial/economy?h=true")
 		if err != nil {
 			log.Println(err)
