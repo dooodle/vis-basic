@@ -6,7 +6,9 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
+	"path"
 	"text/template"
 )
 
@@ -23,31 +25,12 @@ var serve = flag.Bool("http", false, "run as http server")
 func main() {
 	flag.Parse()
 	if *serve {
-		http.HandleFunc("/basicvis.js", func(w http.ResponseWriter, r *http.Request) {
-			contents, err := ioutil.ReadFile("basicvis.js")
-			if err != nil {
-				log.Fatal(err)
-			}
-			w.Write(contents)
-		})
-		http.HandleFunc("/basic.css", func(w http.ResponseWriter, r *http.Request) {
-			contents, err := ioutil.ReadFile("basic.css")
-			if err != nil {
-				log.Fatal(err)
-			}
-			w.Write(contents)
-		})		
-		http.HandleFunc("/worldcup.csv", func(w http.ResponseWriter, r *http.Request) {
-			contents, err := ioutil.ReadFile("worldcup.csv")
-			if err != nil {
-				log.Fatal(err)
-			}
-			w.Write(contents)
-		})
 		http.HandleFunc("/basic", func(w http.ResponseWriter, r *http.Request) {
 			//w.Header().Set("Content-Type", "image/svg+xml")
 			Basic(w)
 		})
+
+		http.HandleFunc("/", simpleFileServer)
 		log.Fatal(http.ListenAndServe(":8080", nil))
 	}
 	Basic(os.Stdout)
@@ -68,6 +51,31 @@ func Basic(w io.Writer) {
 	}
 }
 
+
+
 func initial() Scatter {
 	return Scatter{Height: "500", Width: "500"}
+}
+
+//simpleFileServer implements a very simple file server. It only serves
+//files that exist in the current directory. It only uses the base of
+//the path and ignores any directories
+func simpleFileServer(w http.ResponseWriter, r *http.Request) {
+	u, err := url.Parse(r.URL.String())
+	if err != nil {
+		log.Println(err)
+		w.WriteHeader(409)
+		return
+	}
+	serveFile(w, path.Base(u.String()))
+}
+
+//serveFile serves the file to the writer
+func serveFile(w io.Writer, name string) {
+	contents, err := ioutil.ReadFile(name)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	w.Write(contents)
 }
