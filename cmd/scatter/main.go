@@ -11,9 +11,11 @@ import (
 )
 
 type Scatter = struct {
-	x string
-	y string
-	c string
+	Height string
+	Width  string
+	x      string
+	y      string
+	c      string
 }
 
 var serve = flag.Bool("http", false, "run as http server")
@@ -39,5 +41,12 @@ func Basic(w io.Writer) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	tmpl.Execute(w, nil)
+	err = tmpl.Execute(w, initial())
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func initial() Scatter {
+	return Scatter{Height: "500", Width: "500"}
 }
