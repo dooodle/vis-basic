@@ -1,5 +1,5 @@
 function createSoccerViz() {
-  d3.csv("worldcup.csv").then(data => {overallTeamViz(data)}) // v5
+  d3.csv("mondial/country.csv").then(data => {overallTeamViz(data)}) // v5
   //d3.csv("worldcup.csv", data => {overallTeamViz(data)}) v4            
 function overallTeamViz(incomingData) {
   d3.select("svg")
@@ -19,6 +19,6 @@ function overallTeamViz(incomingData) {
    teamG
     .append("text")
     .attr("y", 30)
-    .text(d => d.team)
+    .text(d => d.country)
     }
 }

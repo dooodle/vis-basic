@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
@@ -20,38 +21,60 @@ type Scatter = struct {
 	c      string
 }
 
-var serve = flag.Bool("http", false, "run as http server")
+var serve = flag.String("http", ":8080", "run as http server")
+var queryService = flag.String("qh", "", "url for query service eg http://127.0.0.1:31784")
 
 func main() {
 	flag.Parse()
-	if *serve {
-		http.HandleFunc("/basic", func(w http.ResponseWriter, r *http.Request) {
-			//w.Header().Set("Content-Type", "image/svg+xml")
-			Basic(w)
-		})
-
-		http.HandleFunc("/", simpleFileServer)
-		log.Fatal(http.ListenAndServe(":8080", nil))
+	fmt.Println("sdfds", *queryService)
+	if *queryService == "" {
+		log.Println("please provide a query service")
+		flag.Usage()
+		os.Exit(1)
 	}
-	Basic(os.Stdout)
+
+	http.HandleFunc("/mondial/country.csv", func(w http.ResponseWriter, r *http.Request) {
+		resp, err := http.Get(*queryService + "/mondial/economy?h=true")
+		if err != nil {
+			log.Println(err)
+			w.WriteHeader(409)
+			return
+		}
+		_, err = io.Copy(w, resp.Body)
+		if err != nil {
+			log.Println(err)
+			w.WriteHeader(409)
+			return
+		}
+		defer resp.Body.Close()
+	})
+
+	http.HandleFunc("/basic", func(w http.ResponseWriter, r *http.Request) {
+		//w.Header().Set("Content-Type", "image/svg+xml")
+		Basic(w)
+	})
+
+	http.HandleFunc("/", simpleFileServer)
+	log.Fatal(http.ListenAndServe(*serve, nil))
+
+	flag.Usage()
 }
 
-func Basic(w io.Writer) {
+func Basic(w io.Writer) error {
 	contents, err := ioutil.ReadFile("template2.svg")
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	tmpl, err := template.New("test").Parse(string(contents))
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	err = tmpl.Execute(w, initial())
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
+	return nil
 }
-
-
 
 func initial() Scatter {
 	return Scatter{Height: "500", Width: "500"}
@@ -67,15 +90,21 @@ func simpleFileServer(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(409)
 		return
 	}
-	serveFile(w, path.Base(u.String()))
+	err = serveFile(w, path.Base(u.String()))
+	if err != nil {
+		log.Println(err)
+		w.WriteHeader(409)
+		return
+	}
 }
 
 //serveFile serves the file to the writer
-func serveFile(w io.Writer, name string) {
+func serveFile(w io.Writer, name string) error {
 	contents, err := ioutil.ReadFile(name)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	w.Write(contents)
+	return nil
 }
