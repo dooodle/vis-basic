@@ -13,12 +13,20 @@ import (
 	"text/template"
 )
 
+type basicVis interface{}
+
+//Scatter provides the parameters for a 'scatter diagram`. As per the
+//reference paper.. "...each point represents an instance of E, and two
+//dimensions a1 and a2 are used to plot its coordinates. Optionally; a
+//third dimension a3 can be used to colour it. p95, "Towards...." in
+//"Coneptual Modelling...."
 type Scatter = struct {
-	Height string
-	Width  string
-	x      string
-	y      string
-	c      string
+	Height   string
+	Width    string
+	Relation string // E
+	X        string // a1
+	Y        string // a2
+	C        string // a3
 }
 
 var serve = flag.String("http", ":8080", "run as http server")
@@ -51,7 +59,15 @@ func main() {
 
 	http.HandleFunc("/basic", func(w http.ResponseWriter, r *http.Request) {
 		//w.Header().Set("Content-Type", "image/svg+xml")
-		Basic(w)
+		vis := dummy()
+		r.ParseForm()
+		if x := r.FormValue("x"); x != "" {
+			vis.X = x
+		}
+				if y := r.FormValue("y"); y != "" {
+			vis.Y = y
+		}
+		Basic(w, vis)
 	})
 
 	http.HandleFunc("/", simpleFileServer)
@@ -60,8 +76,8 @@ func main() {
 	flag.Usage()
 }
 
-func Basic(w io.Writer) error {
-	contents, err := ioutil.ReadFile("template2.svg")
+func Basic(w io.Writer, t basicVis) error {
+	contents, err := ioutil.ReadFile("scatter.svg")
 	if err != nil {
 		return err
 	}
@@ -69,15 +85,21 @@ func Basic(w io.Writer) error {
 	if err != nil {
 		return err
 	}
-	err = tmpl.Execute(w, initial())
+	err = tmpl.Execute(w, t)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func initial() Scatter {
-	return Scatter{Height: "500", Width: "500"}
+func dummy() Scatter {
+	return Scatter{
+		Height:   "500",
+		Width:    "500",
+		Relation: "economy",
+		X:        "inflation",
+		Y:        "unemployment",
+	}
 }
 
 //simpleFileServer implements a very simple file server. It only serves

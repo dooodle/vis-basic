@@ -1,12 +1,13 @@
 function createVis() {
   d3.csv("mondial/economy.csv").then(data => {overallVis(data)}) // v5         
 function overallVis(incomingData) {
-  var maxInflation = d3.max(incomingData, d => d.inflation)
-  var minInflation = d3.min(incomingData, d => d.inflation)
-  var maxUnemployment = d3.max(incomingData, d => d.unemployment)
+  var maxX = d3.max(incomingData, d => d[scatterX])
+  var minX = d3.min(incomingData, d => d[scatterX])
+  var maxY = d3.max(incomingData, d => d[scatterY])
+  var minY = d3.min(incomingData, d => d[scatterY])  
   
-  var yScale = d3.scaleLinear().domain([0,maxUnemployment]).range([460,0])
-  var xScale = d3.scaleLinear().domain([minInflation,maxInflation]).range([20,480]) 
+  var yScale = d3.scaleLinear().domain([minY,maxY]).range([460,0])
+  var xScale = d3.scaleLinear().domain([minX,maxX]).range([20,480]) 
   
   d3.select("svg")
     .selectAll("g")
@@ -18,12 +19,12 @@ function overallVis(incomingData) {
   countries
     .append("circle")
     .attr("r", 1)
-    .attr("cx", d => xScale(d.inflation))
-    .attr("cy", d => yScale(d.unemployment))
+    .attr("cx", d => xScale(d[scatterX]))
+    .attr("cy", d => yScale(d[scatterY]))
    countries
     .append("text")
-    .attr("x", d => xScale(d.inflation))
-    .attr("y", d => yScale(d.unemployment))
+    .attr("x", d => xScale(d[scatterX]))
+    .attr("y", d => yScale(d[scatterY]))
     //.text(d => d.country)
     
      xAxis = d3.axisBottom().scale(xScale).ticks(4)
@@ -33,7 +34,7 @@ function overallVis(incomingData) {
  	 .append("text")
  	 .attr("x","250")
  	 .attr("y","10")
- 	 .text("inflation")
+ 	 .text(scatterX)
  	 
      yAxis = d3.axisRight().scale(yScale).ticks(4)
  	 d3.select("svg").append("g").attr("id","yAxis")
@@ -41,7 +42,7 @@ function overallVis(incomingData) {
  	 .call(yAxis)   
  	 .append("text")
  	 .attr("transform", "rotate(90,-100,110)") 
- 	 .text("unemployment")	 
+ 	 .text(scatterY)	 
     }
 }
 
