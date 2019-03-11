@@ -8,7 +8,7 @@ g > text.active {
   font-size: 30px;
 }
 circle {
-  fill: #75739F;
+ // fill: #75739F;
   stroke: black;
   stroke-width: 1px;
 }

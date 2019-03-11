@@ -27,6 +27,7 @@ type Scatter = struct {
 	X        string // a1
 	Y        string // a2
 	C        string // a3
+	Label	 string
 }
 
 var serve = flag.String("http", ":8080", "run as http server")
@@ -67,6 +68,12 @@ func main() {
 		if y := r.FormValue("y"); y != "" {
 			vis.Y = y
 		}
+		if c := r.FormValue("c"); c != "" {
+			vis.C = c
+		}
+				if label := r.FormValue("label"); label != "" {
+			vis.Label = label
+		}
 		Basic(w, vis)
 	})
 
@@ -94,8 +101,8 @@ func Basic(w io.Writer, t basicVis) error {
 
 func dummy() Scatter {
 	return Scatter{
-		Height:   "500",
-		Width:    "500",
+		Height:   "600",
+		Width:    "600",
 		Relation: "economy",
 		X:        "inflation",
 		Y:        "unemployment",
