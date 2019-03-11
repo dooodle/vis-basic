@@ -1,14 +1,14 @@
 function createVis() {
   d3.csv("mondial/economy.csv").then(data => {overallVis(data)}) // v5         
 function overallVis(incomingData) {
-  var maxX = d3.max(incomingData, d => d[scatterX])
-  var minX = d3.min(incomingData, d => d[scatterX])
-  var maxY = d3.max(incomingData, d => d[scatterY])
-  var minY = d3.min(incomingData, d => d[scatterY])  
-  
+  var maxX = d3.max(incomingData, d => Number(d[scatterX]))
+  var minX = d3.min(incomingData, d => Number(d[scatterX]))
+  var maxY = d3.max(incomingData, d => Number(d[scatterY]))
+  var minY = d3.min(incomingData, d => Number(d[scatterY]))
+ 
   var yScale = d3.scaleLinear().domain([minY,maxY]).range([460,0])
   var xScale = d3.scaleLinear().domain([minX,maxX]).range([20,480]) 
-  
+    
   d3.select("svg")
     .selectAll("g")
     .data(incomingData)

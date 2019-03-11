@@ -19,7 +19,7 @@ type basicVis interface{}
 //reference paper.. "...each point represents an instance of E, and two
 //dimensions a1 and a2 are used to plot its coordinates. Optionally; a
 //third dimension a3 can be used to colour it. p95, "Towards...." in
-//"Coneptual Modelling...."
+//"Conceptual Modelling...."
 type Scatter = struct {
 	Height   string
 	Width    string
@@ -64,7 +64,7 @@ func main() {
 		if x := r.FormValue("x"); x != "" {
 			vis.X = x
 		}
-				if y := r.FormValue("y"); y != "" {
+		if y := r.FormValue("y"); y != "" {
 			vis.Y = y
 		}
 		Basic(w, vis)
