@@ -27,7 +27,7 @@ type Scatter = struct {
 	X        string // a1
 	Y        string // a2
 	C        string // a3
-	Label	 string
+	Label    string
 }
 
 var serve = flag.String("http", ":8080", "run as http server")
@@ -71,7 +71,7 @@ func main() {
 		if c := r.FormValue("c"); c != "" {
 			vis.C = c
 		}
-				if label := r.FormValue("label"); label != "" {
+		if label := r.FormValue("label"); label != "" {
 			vis.Label = label
 		}
 		Basic(w, vis)

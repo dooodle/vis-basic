@@ -7,14 +7,15 @@ function overallVis(incomingData) {
   var minY = d3.min(incomingData, d => Number(d[scatterY])) 
   var yScale = d3.scaleLinear().domain([minY,maxY]).range([460,0])
   var xScale = d3.scaleLinear().domain([minX,maxX]).range([20,480]) 
-  //var xScale = d3.scaleLog().domain([0.1,maxX]).range([20,480])  
-  //var yScale = d3.scaleLog().domain([0.5,maxY]).range([460,0])
+//  var xScale = d3.scaleLog().domain([0.1,maxX]).range([20,480])  
+//  var yScale = d3.scaleLog().domain([0.5,maxY]).range([460,0])
+
        
   var cScale
   if (scatterC) {
   	var maxC = d3.max(incomingData, d => Number(d[scatterC]))
   	var minC = d3.min(incomingData, d => Number(d[scatterC]))	
-  	cScale = d3.scaleQuantize().domain([minC, maxC]).range(colorbrewer.Set2[8]);
+  	cScale = d3.scaleQuantize().domain([minC, maxC]).range(colorbrewer.Set2[4]);
   }
   
   d3.select("svg")
@@ -38,10 +39,23 @@ function overallVis(incomingData) {
     .text(d => d[label])
  	}
 	if (scatterC) {
-		var countries = d3.selectAll("g.overallG circle");                            
-  		countries.attr("fill", d => cScale(d[scatterC]))
+	  var countries = d3.selectAll("g.overallG circle");                            
+  	  countries.attr("fill", d => cScale(d[scatterC]))
+  		
+      var legend = d3.legendColor()
+  	  .labelFormat(d3.format(".2f"))
+  	  .labelOffset(50) // this number should be determined based on length of label text
+  	  .title(scatterC)
+  	  .scale(cScale)
+  	  ;
+
+	  d3.select("svg")
+	  .append("g")
+	  .attr("class","legend")
+	  .attr("transform", "translate(300,100)")
+	  .call(legend);
 	}
-    
+
      xAxis = d3.axisBottom().scale(xScale).ticks(8,".1f")
  	 d3.select("svg").append("g").attr("id","xAxis")
  	 .attr("transform", "translate(0,480)")
