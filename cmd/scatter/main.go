@@ -42,7 +42,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	http.HandleFunc("/mondial/economy.csv", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/basic/mondial/economy.csv", func(w http.ResponseWriter, r *http.Request) {
 		resp, err := http.Get(*queryService + "/mondial/economy?h=true")
 		if err != nil {
 			log.Println(err)
@@ -58,7 +58,7 @@ func main() {
 		defer resp.Body.Close()
 	})
 
-	http.HandleFunc("/basic", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/basic/scatter", func(w http.ResponseWriter, r *http.Request) {
 		//w.Header().Set("Content-Type", "image/svg+xml")
 		vis := dummy()
 		r.ParseForm()
@@ -74,7 +74,7 @@ func main() {
 		if label := r.FormValue("label"); label != "" {
 			vis.Label = label
 		}
-		Basic(w, vis)
+		Scatter(w, vis)
 	})
 
 	http.HandleFunc("/", simpleFileServer)
@@ -83,7 +83,7 @@ func main() {
 	flag.Usage()
 }
 
-func Basic(w io.Writer, t basicVis) error {
+func Scatter(w io.Writer, t basicVis) error {
 	contents, err := ioutil.ReadFile("scatter.svg")
 	if err != nil {
 		return err
