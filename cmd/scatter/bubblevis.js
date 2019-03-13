@@ -47,7 +47,7 @@ function overallVis(incomingData) {
   		
       var legend = d3.legendColor()
   	  .labelFormat(d3.format(".2f"))
-  	  .labelOffset(50) // this number should be determined based on length of label text
+  	  .labelOffset(60) // this number should be determined based on length of label text
   	  .title(scatterC)
   	  .scale(cScale)
   	  ;
