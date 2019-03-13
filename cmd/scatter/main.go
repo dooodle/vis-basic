@@ -30,6 +30,17 @@ type Scatter = struct {
 	Label    string
 }
 
+type Bubble = struct {
+	Height   string
+	Width    string
+	Relation string // E
+	X        string // a1
+	Y        string // a2
+	S        string // a3
+	C        string // a4
+	Label    string
+}
+
 var serve = flag.String("http", ":8080", "run as http server")
 var queryService = flag.String("qh", "", "url for query service eg http://127.0.0.1:31784")
 
@@ -74,7 +85,29 @@ func main() {
 		if label := r.FormValue("label"); label != "" {
 			vis.Label = label
 		}
-		Scatter(w, vis)
+		ScatterPlot(w, vis)
+	})
+
+	http.HandleFunc("/basic/bubble", func(w http.ResponseWriter, r *http.Request) {
+
+		vis := dummyBubble()
+		r.ParseForm()
+		if x := r.FormValue("x"); x != "" {
+			vis.X = x
+		}
+		if y := r.FormValue("y"); y != "" {
+			vis.Y = y
+		}
+		if c := r.FormValue("c"); c != "" {
+			vis.C = c
+		}
+		if s := r.FormValue("s"); s != "" {
+			vis.S = s
+		}
+		if label := r.FormValue("label"); label != "" {
+			vis.Label = label
+		}
+		BubblePlot(w, vis)
 	})
 
 	http.HandleFunc("/", simpleFileServer)
@@ -83,8 +116,24 @@ func main() {
 	flag.Usage()
 }
 
-func Scatter(w io.Writer, t basicVis) error {
+func ScatterPlot(w io.Writer, t basicVis) error {
 	contents, err := ioutil.ReadFile("scatter.svg")
+	if err != nil {
+		return err
+	}
+	tmpl, err := template.New("test").Parse(string(contents))
+	if err != nil {
+		return err
+	}
+	err = tmpl.Execute(w, t)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func BubblePlot(w io.Writer, t basicVis) error {
+	contents, err := ioutil.ReadFile("bubble.svg")
 	if err != nil {
 		return err
 	}
@@ -106,6 +155,17 @@ func dummy() Scatter {
 		Relation: "economy",
 		X:        "inflation",
 		Y:        "unemployment",
+	}
+}
+
+func dummyBubble() Bubble {
+	return Bubble{
+		Height:   "600",
+		Width:    "600",
+		Relation: "economy",
+		X:        "inflation",
+		Y:        "unemployment",
+		S:        "gdp",
 	}
 }
 
