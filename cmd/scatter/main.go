@@ -161,7 +161,7 @@ func dummy() Scatter {
 func dummyBubble() Bubble {
 	return Bubble{
 		Height:   "600",
-		Width:    "600",
+		Width:    "700",
 		Relation: "economy",
 		X:        "inflation",
 		Y:        "unemployment",

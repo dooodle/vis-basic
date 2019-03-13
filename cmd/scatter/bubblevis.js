@@ -10,8 +10,8 @@ function overallVis(incomingData) {
   var yScale = d3.scaleLinear().domain([minY,maxY]).range([460,0])
   var xScale = d3.scaleLinear().domain([minX,maxX]).range([20,480]) 
   var sScale = d3.scaleQuantize().domain([minS, maxS]).range([2,6,8,10,12,14]);
-  //var xScale = d3.scaleLog().domain([0.1,maxX]).range([20,480])  
-  //var yScale = d3.scaleLog().domain([0.5,maxY]).range([460,0])
+  var xScale = d3.scaleLog().domain([0.1,maxX]).range([20,480])  
+  var yScale = d3.scaleLog().domain([0.5,maxY]).range([460,0])
 
        
   var cScale
@@ -35,11 +35,17 @@ function overallVis(incomingData) {
     .attr("cy", d => yScale(d[scatterY]))
     
    if (label) {	
+   
    countries
     .append("text")
     .attr("x", d => xScale(d[scatterX]))
     .attr("y", d => yScale(d[scatterY]))
-    .text(d => d[label])
+    .text(d => {
+       if (sScale(d[scatterS]) > 2) {
+         return d[label]
+        }
+        return ""
+      })
  	}
 	if (scatterC) {
 	  var countries = d3.selectAll("g.overallG circle");                            
@@ -55,7 +61,7 @@ function overallVis(incomingData) {
 	  d3.select("svg")
 	  .append("g")
 	  .attr("class","legend")
-	  .attr("transform", "translate(300,100)")
+	  .attr("transform", "translate(500,350)")
 	  .call(legend);
 	}
 
