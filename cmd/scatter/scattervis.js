@@ -7,8 +7,8 @@ function overallVis(incomingData) {
   var minY = d3.min(incomingData, d => Number(d[scatterY])) 
   var yScale = d3.scaleLinear().domain([minY,maxY]).range([460,0])
   var xScale = d3.scaleLinear().domain([minX,maxX]).range([20,480]) 
-//  var xScale = d3.scaleLog().domain([0.1,maxX]).range([20,480])  
-//  var yScale = d3.scaleLog().domain([0.5,maxY]).range([460,0])
+  //var xScale = d3.scaleLog().domain([0.1,maxX]).range([20,480])  
+  //var yScale = d3.scaleLog().domain([0.5,maxY]).range([460,0])
 
        
   var cScale
