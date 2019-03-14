@@ -12,6 +12,12 @@ function overallVis(incomingData) {
   var sScale = d3.scaleQuantize().domain([minS, maxS]).range([2,6,8,10,12,14]);
   var xScale = d3.scaleLog().domain([0.1,maxX]).range([20,480])  
   var yScale = d3.scaleLog().domain([0.5,maxY]).range([460,0])
+  var legendBubble = d3.legendSize()
+    .labelOffset(60) // this number should be determined based on length of label text
+    .title(scatterS)
+    .shape("circle")
+  	.scale(sScale)
+
 
        
   var cScale
@@ -61,7 +67,7 @@ function overallVis(incomingData) {
 	  d3.select("svg")
 	  .append("g")
 	  .attr("class","legend")
-	  .attr("transform", "translate(500,350)")
+	  .attr("transform", "translate(550,350)")
 	  .call(legend);
 	}
 
@@ -80,7 +86,13 @@ function overallVis(incomingData) {
  	 .call(yAxis)   
  	 .append("text")
  	 .attr("transform", "rotate(90,-100,110)") 
- 	 .text(scatterY)	 
-    }
+ 	 .text(scatterY)
+ 	 
+ 	 d3.select("svg").append("g").attr("id","bubbleScale")
+      .attr("transform", "translate(550,20)")
+      .call(legendBubble)
+
+
+    }          
 }
 
