@@ -1,6 +1,6 @@
 <html>
 <head>
-  <title>Basic Scatter Diagram for - {{.Relation}}</title>
+  <title>Basic Bubble Diagram for - {{.Relation}}</title>
   <meta charset="utf-8" />
   <link type="text/css" rel="stylesheet" href="basic.css" />
 </head>
@@ -10,6 +10,8 @@ var scatterY = "{{.Y}}"
 var scatterC = "{{.C}}"
 var scatterS = "{{.S}}"
 var label = "{{.Label}}"
+var logX = {{.IsLogX}} 
+var logY = {{.IsLogY}}
 </script>
 <script src="https://d3js.org/d3.v5.min.js"></script>
 <script src="http://colorbrewer2.org/export/colorbrewer.js"></script>

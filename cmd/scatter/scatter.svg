@@ -9,6 +9,8 @@ var scatterX = "{{.X}}"
 var scatterY = "{{.Y}}"
 var scatterC = "{{.C}}"
 var label = "{{.Label}}"
+var logX = {{.IsLogX}} 
+var logY = {{.IsLogY}}
 </script>
 <script src="https://d3js.org/d3.v5.min.js"></script>
 <script src="http://colorbrewer2.org/export/colorbrewer.js"></script>

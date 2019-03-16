@@ -28,6 +28,8 @@ type Scatter = struct {
 	Y        string // a2
 	C        string // a3
 	Label    string
+	IsLogX   bool
+	IsLogY   bool
 }
 
 type Bubble = struct {
@@ -39,6 +41,8 @@ type Bubble = struct {
 	S        string // a3
 	C        string // a4
 	Label    string
+	IsLogX   bool
+	IsLogY   bool
 }
 
 var serve = flag.String("http", ":8080", "run as http server")
@@ -76,8 +80,14 @@ func main() {
 		if x := r.FormValue("x"); x != "" {
 			vis.X = x
 		}
+		if logx := r.FormValue("logx"); logx == "true" {
+			vis.IsLogX = true
+		}
 		if y := r.FormValue("y"); y != "" {
 			vis.Y = y
+		}
+		if logy := r.FormValue("logy"); logy == "true" {
+			vis.IsLogY = true
 		}
 		if c := r.FormValue("c"); c != "" {
 			vis.C = c
@@ -95,8 +105,14 @@ func main() {
 		if x := r.FormValue("x"); x != "" {
 			vis.X = x
 		}
+		if logx := r.FormValue("logx"); logx == "true" {
+			vis.IsLogX = true
+		}
 		if y := r.FormValue("y"); y != "" {
 			vis.Y = y
+		}
+		if logy := r.FormValue("logy"); logy == "true" {
+			vis.IsLogY = true
 		}
 		if c := r.FormValue("c"); c != "" {
 			vis.C = c
@@ -155,6 +171,8 @@ func dummy() Scatter {
 		Relation: "economy",
 		X:        "inflation",
 		Y:        "unemployment",
+		IsLogX:   false,
+		IsLogY:   false,
 	}
 }
 
@@ -166,6 +184,8 @@ func dummyBubble() Bubble {
 		X:        "inflation",
 		Y:        "unemployment",
 		S:        "gdp",
+		IsLogX:   false,
+		IsLogY:   false,
 	}
 }
 
