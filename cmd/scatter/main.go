@@ -167,7 +167,7 @@ func BubblePlot(w io.Writer, t basicVis) error {
 func dummy() Scatter {
 	return Scatter{
 		Height:   "600",
-		Width:    "600",
+		Width:    "700",
 		Relation: "economy",
 		X:        "inflation",
 		Y:        "unemployment",

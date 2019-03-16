@@ -1,16 +1,23 @@
 function createVis() {
-  d3.csv("mondial/economy.csv").then(data => {overallVis(data)}) // v5         
+  d3.csv("mondial/economy.csv", d => {
+	if (
+		logX && Number(d[scatterX]) <=0 || 
+	    logY && Number(d[scatterY]) <=0 
+	    ){
+	  console.log(d[scatterX])
+	  return undefined
+	}
+    return d
+  })
+  .then(data => {overallVis(data)}) // v5        
 function overallVis(incomingData) {
   var maxX = d3.max(incomingData, d => Number(d[scatterX]))
   var minX = d3.min(incomingData, d => Number(d[scatterX]))
   var maxY = d3.max(incomingData, d => Number(d[scatterY]))
   var minY = d3.min(incomingData, d => Number(d[scatterY])) 
-  var yScale = d3.scaleLinear().domain([minY,maxY]).range([460,0])
-  var xScale = d3.scaleLinear().domain([minX,maxX]).range([20,480]) 
-  //var xScale = d3.scaleLog().domain([0.1,maxX]).range([20,480])  
-  //var yScale = d3.scaleLog().domain([0.5,maxY]).range([460,0])
-
-       
+  var yScale = (logY) ? d3.scaleLog().domain([0.5,maxY]).range([460,0]) : d3.scaleLinear().domain([minY,maxY]).range([460,0])
+  var xScale = (logX) ? d3.scaleLog().domain([0.1,maxX]).range([20,480]) :  d3.scaleLinear().domain([minX,maxX]).range([20,480]) 
+      
   var cScale
   if (scatterC) {
   	var maxC = d3.max(incomingData, d => Number(d[scatterC]))
@@ -44,7 +51,7 @@ function overallVis(incomingData) {
   		
       var legend = d3.legendColor()
   	  .labelFormat(d3.format(".2f"))
-  	  .labelOffset(50) // this number should be determined based on length of label text
+  	  .labelOffset(60) // this number should be determined based on length of label text
   	  .title(scatterC)
   	  .scale(cScale)
   	  ;
@@ -52,7 +59,7 @@ function overallVis(incomingData) {
 	  d3.select("svg")
 	  .append("g")
 	  .attr("class","legend")
-	  .attr("transform", "translate(300,100)")
+	  .attr("transform", "translate(550,350)")
 	  .call(legend);
 	}
 
