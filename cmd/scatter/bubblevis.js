@@ -4,7 +4,6 @@ function createVis() {
 		logX && Number(d[scatterX]) <=0 || 
 	    logY && Number(d[scatterY]) <=0 
 	    ){
-	  console.log(d[scatterX])
 	  return undefined
 	}
     return d
@@ -18,8 +17,8 @@ function overallVis(incomingData) {
   var maxS = d3.max(incomingData, d => Number(d[scatterS]))
   var minS = d3.min(incomingData, d => Number(d[scatterS]))  
    
-  var yScale = (logY) ? d3.scaleLog().domain([0.5,maxY]).range([460,0]) : d3.scaleLinear().domain([minY,maxY]).range([460,0])
-  var xScale = (logX) ? d3.scaleLog().domain([0.1,maxX]).range([20,480]) :  d3.scaleLinear().domain([minX,maxX]).range([20,480]) 
+  var yScale = (logY) ? d3.scaleLog().domain([minY,maxY]).range([460,0]) : d3.scaleLinear().domain([minY,maxY]).range([460,0])
+  var xScale = (logX) ? d3.scaleLog().domain([minX,maxX]).range([20,480]) :  d3.scaleLinear().domain([minX,maxX]).range([20,480]) 
    
   var sScale = d3.scaleQuantize().domain([minS, maxS]).range([2,6,8,10,12,14]);
 
