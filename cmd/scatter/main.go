@@ -45,6 +45,16 @@ type Bubble = struct {
 	IsLogY   bool
 }
 
+type Bar = struct {
+	Height   string
+	Width    string
+	Relation string // E
+	X        string // a1
+	Label    string
+	IsLogX   bool
+	IsLogY   bool
+}
+
 var serve = flag.String("http", ":8080", "run as http server")
 var queryService = flag.String("qh", "", "url for query service eg http://127.0.0.1:31784")
 
@@ -126,6 +136,29 @@ func main() {
 		BubblePlot(w, vis)
 	})
 
+	http.HandleFunc("/basic/bar", func(w http.ResponseWriter, r *http.Request) {
+
+		vis := dummyBar()
+		r.ParseForm()
+		if x := r.FormValue("x"); x != "" {
+			vis.X = x
+		}
+		if logx := r.FormValue("logx"); logx == "true" {
+			vis.IsLogX = true
+		}
+
+		if c := r.FormValue("c"); c != "" {
+			vis.C = c
+		}
+		if s := r.FormValue("s"); s != "" {
+			vis.S = s
+		}
+		if label := r.FormValue("label"); label != "" {
+			vis.Label = label
+		}
+		BarPlot(w, vis)
+	})
+
 	http.HandleFunc("/", simpleFileServer)
 	log.Fatal(http.ListenAndServe(*serve, nil))
 
@@ -164,6 +197,22 @@ func BubblePlot(w io.Writer, t basicVis) error {
 	return nil
 }
 
+func BarPlot(w io.Writer, t basicVis) error {
+	contents, err := ioutil.ReadFile("bar.svg")
+	if err != nil {
+		return err
+	}
+	tmpl, err := template.New("test").Parse(string(contents))
+	if err != nil {
+		return err
+	}
+	err = tmpl.Execute(w, t)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func dummy() Scatter {
 	return Scatter{
 		Height:   "600",
@@ -184,6 +233,17 @@ func dummyBubble() Bubble {
 		X:        "inflation",
 		Y:        "unemployment",
 		S:        "gdp",
+		IsLogX:   false,
+		IsLogY:   false,
+	}
+}
+
+func dummyBar() Bubble {
+	return Bubble{
+		Height:   "600",
+		Width:    "700",
+		Relation: "economy",
+		X:        "unemployment",
 		IsLogX:   false,
 		IsLogY:   false,
 	}
