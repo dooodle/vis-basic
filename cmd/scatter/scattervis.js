@@ -64,19 +64,23 @@ function createVis() {
 
         xAxis = d3.axisBottom().scale(xScale).ticks(8,".1f")
  	d3.select("svg").append("g").attr("id","xAxis")
- 	    .attr("transform", "translate(0,480)")
+ 	    .attr("transform", "translate(0,460)")
  	    .call(xAxis)
  	    .append("text")
  	    .attr("x","250")
  	    .attr("y","10")
+            .attr("transform","translate(0,50)")        
  	    .text(scatterX)
  	
-        yAxis = d3.axisRight().scale(yScale).ticks(8,".1f")
+        yAxis = d3.axisRight()
+            .scale(yScale)
+            .ticks(8,".1f")
+            .tickPadding("10")
  	d3.select("svg").append("g").attr("id","yAxis")
  	    .attr("transform", "translate(480,0)") 
  	    .call(yAxis)   
  	    .append("text")
- 	    .attr("transform", "rotate(90,-100,110)") 
+ 	    .attr("transform", "rotate(90,-100,110) translate(0,-50)")
  	    .text(scatterY)	 
     }
 }
