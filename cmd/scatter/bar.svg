@@ -1,25 +1,25 @@
 <html>
-<head>
-  <title>Basic Bar Diagram for - {{.Relation}}</title>
-  <meta charset="utf-8" />
-  <link type="text/css" rel="stylesheet" href="basic.css" />
-</head>
-<script>
-var scatterX = "{{.X}}"
-var label = "{{.Label}}"
-var logX = {{.IsLogX}} 
-var logY = {{.IsLogY}}
-var width = {{.Width}}
-var height = {{.Height}}
-</script>
-<script src="https://d3js.org/d3.v5.min.js"></script>
-<script src="http://colorbrewer2.org/export/colorbrewer.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.25.6/d3-legend.min.js"></script>
-<script src="barvis.js"></script>
-<body onload="createVis()">
-<div id="viz">
-<svg style="width:{{.Width}}px;height:{{.Height}}px;border:1px lightgray solid;" />
-</div>
-<div id="controls" />
-</body>
+  <head>
+    <title>Basic Bar Diagram for - {{.Relation}}</title>
+    <meta charset="utf-8" />
+    <link type="text/css" rel="stylesheet" href="basic.css" />
+  </head>
+  <script>
+    var scatterX = "{{.X}}"
+    var label = "{{.Label}}"
+    var logX = {{.IsLogX}} 
+    var logY = {{.IsLogY}}
+    var width = {{.Width}}
+    var height = {{.Height}}
+  </script>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+  <script src="http://colorbrewer2.org/export/colorbrewer.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.25.6/d3-legend.min.js"></script>
+  <script src="barvis.js"></script>
+  <body onload="createVis()">
+    <div id="viz">
+      <svg style="width:{{.Width}}px;height:{{.Height}}px;border:1px lightgray solid;" />
+    </div>
+    <div id="controls" />
+  </body>
 </html>

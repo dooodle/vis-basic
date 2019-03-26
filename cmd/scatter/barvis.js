@@ -35,17 +35,34 @@ function createVis() {
             .style("stroke","black")
             .style("stroke-opacity",0.25)
 
+        if (label) {	
+            countries
+                .append("text")
+                .attr("x", (d,i) => i * barWidth)  
+                .attr("y", d => 480 - xScale(d[scatterX]))
+                .style("font-size", barWidth + "px")
+                .style("text-anchor", "start")
+             	.attr("transform", (d,i) => {
+                    x = i * barWidth
+                    y = 480 - xScale(d[scatterX])
+                    z = 480 - y + barWidth/2
+                    console.log(barWidth)
+                    return "rotate(90,"+x+","+y+") translate("+z+",0)"
+                })
+                .text(d => {
+                    return d[label]
+                })
+ 	}
+
+        
 
         axis = d3.axisRight().scale(axisScale).ticks(8,".1f")
  	d3.select("svg").append("g").attr("id","axis")
- 	
  	    .call(axis)
  	    .append("text")
- 	    .attr("x","250")
- 	    .attr("y",480 + 10)
- 	//.attr("transform", "rotate(-90)")
+ 	    .attr("x","350")
+ 	    .attr("y",480 + 30)
  	    .text(scatterX)
- 	
     }
 }
 

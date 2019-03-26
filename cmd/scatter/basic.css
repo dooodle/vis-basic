@@ -2,8 +2,8 @@ text {
   font-size: 10px;
   text-anchor: middle;
   fill: #4f442b;                 1
-
 }
+
 g > text.active {
   font-size: 30px;
 }
