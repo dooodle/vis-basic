@@ -17,7 +17,6 @@ function createVis() {
         var axisScale = (logX) ? d3.scaleLog().domain([minX,maxX]).range([480,20]) :  d3.scaleLinear().domain([minX,maxX]).range([480,20]) 
         var cScale = d3.scaleQuantize().domain([minX, maxX]).range(colorbrewer.Set2[4]);
         
-        
         d3.select("svg")
             .selectAll("g")
             .data(incomingData)
@@ -53,8 +52,6 @@ function createVis() {
                     return d[label]
                 })
  	}
-
-        
 
         axis = d3.axisRight().scale(axisScale).ticks(8,".1f")
  	d3.select("svg").append("g").attr("id","axis")
