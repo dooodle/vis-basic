@@ -100,8 +100,6 @@ function createVis() {
  	d3.select("svg").append("g").attr("id","bubbleScale")
             .attr("transform", "translate(550,20)")
             .call(legendBubble)
-
-
     }          
 }
 
