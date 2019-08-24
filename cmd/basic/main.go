@@ -60,7 +60,7 @@ var queryService = flag.String("qh", "", "url for query service eg http://127.0.
 
 func main() {
 	flag.Parse()
-	fmt.Println("sdfds", *queryService)
+	fmt.Println("query service:", *queryService)
 	if *queryService == "" {
 		log.Println("please provide a query service")
 		flag.Usage()
@@ -68,6 +68,7 @@ func main() {
 	}
 
 	http.HandleFunc("/basic/mondial/economy.csv", func(w http.ResponseWriter, r *http.Request) {
+		log.Println("calling: /mondial/economy?h=true")
 		resp, err := http.Get(*queryService + "/mondial/economy?h=true")
 		if err != nil {
 			log.Println(err)
@@ -85,6 +86,7 @@ func main() {
 
 	http.HandleFunc("/basic/scatter", func(w http.ResponseWriter, r *http.Request) {
 		//w.Header().Set("Content-Type", "image/svg+xml")
+		log.Println("processing: /basic/scatter")
 		vis := dummy()
 		r.ParseForm()
 		if x := r.FormValue("x"); x != "" {
