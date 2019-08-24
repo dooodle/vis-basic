@@ -5,6 +5,7 @@
     <link type="text/css" rel="stylesheet" href="basic.css" />
   </head>
   <script>
+    var relation = "{{.Relation}}"  
     var scatterX = "{{.X}}"
     var label = "{{.Label}}"
     var logX = {{.IsLogX}} 

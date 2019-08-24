@@ -1,5 +1,5 @@
 function createVis() {
-    d3.csv("mondial/economy.csv", d => {
+    d3.csv("mondial/" + relation +".csv", d => {
 	if (
 	    logX && Number(d[scatterX]) <=0 
 	){
