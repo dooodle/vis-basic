@@ -1,3 +1,6 @@
 FROM scratch
-ADD server /
+COPY server /
+COPY *.js /
+COPY *.ico /
+COPY *.svg /
 CMD ["/server","-qh","http://178.62.59.88:31784"]
