@@ -10,6 +10,7 @@ import (
 	"net/url"
 	"os"
 	"path"
+	"regexp"
 	"text/template"
 )
 
@@ -67,22 +68,49 @@ func main() {
 		os.Exit(1)
 	}
 
-	http.HandleFunc("/basic/mondial/economy.csv", func(w http.ResponseWriter, r *http.Request) {
-		log.Println("calling: /mondial/economy?h=true")
-		resp, err := http.Get(*queryService + "/mondial/economy?h=true")
-		if err != nil {
-			log.Println(err)
-			w.WriteHeader(409)
-			return
+	http.HandleFunc("/basic/mondial/", func(w http.ResponseWriter, r *http.Request) {
+		var re = regexp.MustCompile(`/basic/mondial/([\w\-]+).csv$`)
+		switch {
+		case re.MatchString(r.URL.Path):
+			matches := re.FindStringSubmatch(r.URL.Path)
+			entity := matches[1]
+			relative := fmt.Sprintf("calling: /mondial/%s?h=true", entity)
+			log.Println(relative)
+			resp, err := http.Get(*queryService + relative)
+			if err != nil {
+				log.Println(err)
+				w.WriteHeader(409)
+				return
+			}
+			_, err = io.Copy(w, resp.Body)
+			if err != nil {
+				log.Println(err)
+				w.WriteHeader(409)
+				return
+			}
+			defer resp.Body.Close()
+		default:
+			log.Println("Improper Url: " + r.URL.Path)
+			w.WriteHeader(404)
 		}
-		_, err = io.Copy(w, resp.Body)
-		if err != nil {
-			log.Println(err)
-			w.WriteHeader(409)
-			return
-		}
-		defer resp.Body.Close()
 	})
+
+	// http.HandleFunc("/basic/mondial/economy.csv", func(w http.ResponseWriter, r *http.Request) {
+	// 	log.Println("calling: /mondial/economy?h=true")
+	// 	resp, err := http.Get(*queryService + "/mondial/economy?h=true")
+	// 	if err != nil {
+	// 		log.Println(err)
+	// 		w.WriteHeader(409)
+	// 		return
+	// 	}
+	// 	_, err = io.Copy(w, resp.Body)
+	// 	if err != nil {
+	// 		log.Println(err)
+	// 		w.WriteHeader(409)
+	// 		return
+	// 	}
+	// 	defer resp.Body.Close()
+	// })
 
 	http.HandleFunc("/basic/scatter", func(w http.ResponseWriter, r *http.Request) {
 		//w.Header().Set("Content-Type", "image/svg+xml")
