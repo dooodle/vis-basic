@@ -19,7 +19,7 @@ script:
   - docker build -t dooodle/vis-d3 .
   - bash install-kubectl
   - bash docker_push
-  - kubectl get pods | grep simple
-  - kubectl patch deployment simple-deployment  -p   "{\"spec\":{\"template\":{\"metadata\":{\"annotations\":{\"date\":\"`date +'%s'`\"}}}}}"
-  - kubectl get pods | grep simple
+  - kubectl get pods | grep d3
+  - kubectl patch deployment d3-deployment  -p   "{\"spec\":{\"template\":{\"metadata\":{\"annotations\":{\"date\":\"`date +'%s'`\"}}}}}"
+  - kubectl get pods | grep d3
 
