@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: d3-deployment
+  labels:
+    app: d3
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: d3
+  template:
+    metadata:
+      labels:
+        app: d3
+    spec:
+      containers:
+      - name: d3
+        image: dooodle/vis-d3:latest
+        ports:
+        - containerPort: 8080
+        env:
+          - name: VIS_MONDIAL_USER
+            valueFrom:
+              configMapKeyRef:
+                name: vis-simple-config-map
+                key: VIS_MONDIAL_USER
+          - name: VIS_MONDIAL_PASSWORD
+              configMapKeyRef:
+                name: vis-simple-config-map
+                key: VIS_MONDIAL_PASSWORD
+          - name: VIS_MONDIAL_HOST
+              configMapKeyRef:
+                name: vis-simple-config-map
+                key: VIS_MONDIAL_HOST
+          - name: VIS_MONDIAL_PORT
+               configMapKeyRef:
+                name: vis-simple-config-map
+                key: VIS_MONDIAL_PORT
+          - name: VIS_MONDIAL_SSLMODE
+              configMapKeyRef:
+                name: vis-simple-config-map
+                key: VIS_MONDIAL_SSLMODE
+          - name: VIS_MONDIAL_DBNAME
+              configMapKeyRef:
+                name: vis-simple-config-map
+                key: VIS_MONDIAL_DBNAME
