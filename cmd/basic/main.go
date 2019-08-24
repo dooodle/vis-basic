@@ -74,9 +74,9 @@ func main() {
 		case re.MatchString(r.URL.Path):
 			matches := re.FindStringSubmatch(r.URL.Path)
 			entity := matches[1]
-			relative := fmt.Sprintf("calling: /mondial/%s?h=true", entity)
-			log.Println(relative)
-			resp, err := http.Get(*queryService + relative)
+			query := fmt.Sprintf("%s/mondial/%s?h=true", *queryService, entity)
+			log.Println("calling", query)
+			resp, err := http.Get(query)
 			if err != nil {
 				log.Println(err)
 				w.WriteHeader(409)
@@ -95,28 +95,14 @@ func main() {
 		}
 	})
 
-	// http.HandleFunc("/basic/mondial/economy.csv", func(w http.ResponseWriter, r *http.Request) {
-	// 	log.Println("calling: /mondial/economy?h=true")
-	// 	resp, err := http.Get(*queryService + "/mondial/economy?h=true")
-	// 	if err != nil {
-	// 		log.Println(err)
-	// 		w.WriteHeader(409)
-	// 		return
-	// 	}
-	// 	_, err = io.Copy(w, resp.Body)
-	// 	if err != nil {
-	// 		log.Println(err)
-	// 		w.WriteHeader(409)
-	// 		return
-	// 	}
-	// 	defer resp.Body.Close()
-	// })
-
 	http.HandleFunc("/basic/scatter", func(w http.ResponseWriter, r *http.Request) {
 		//w.Header().Set("Content-Type", "image/svg+xml")
 		log.Println("processing: /basic/scatter")
 		vis := dummy()
 		r.ParseForm()
+		if e := r.FormValue("e"); e != "" {
+			vis.Relation = e
+		}
 		if x := r.FormValue("x"); x != "" {
 			vis.X = x
 		}
@@ -142,6 +128,10 @@ func main() {
 
 		vis := dummyBubble()
 		r.ParseForm()
+		if e := r.FormValue("e"); e != "" {
+			vis.Relation = e
+		}
+
 		if x := r.FormValue("x"); x != "" {
 			vis.X = x
 		}
@@ -170,6 +160,10 @@ func main() {
 
 		vis := dummyBar()
 		r.ParseForm()
+		if e := r.FormValue("e"); e != "" {
+			vis.Relation = e
+		}
+
 		if x := r.FormValue("x"); x != "" {
 			vis.X = x
 		}
