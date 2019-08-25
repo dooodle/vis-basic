@@ -1,0 +1,31 @@
+<html>
+<head>
+  <title>Weak Enrity Line Chart for - {{.Relation}}</title>
+  <meta charset="utf-8" />
+  <link type="text/css" rel="stylesheet" href="basic.css" />
+</head>
+<script>
+var relation = "{{.Relation}}"  
+var scatterX = "{{.X}}"
+var scatterY = "{{.Y}}"
+var scatterC = "{{.C}}"
+var label = "{{.Label}}"
+var logX = {{.IsLogX}} 
+var logY = {{.IsLogY}}
+</script>
+<!-- <script src="https://d3js.org/d3.v5.min.js"></script> -->
+<!-- Load d3.js -->
+<script src="https://d3js.org/d3.v4.js"></script>
+
+<script src="http://colorbrewer2.org/export/colorbrewer.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.25.6/d3-legend.min.js"></script>
+<script src="line.js"></script>
+<body onload="createVis()">
+<div id="viz">
+<svg style="width:{{.Width}}px;height:{{.Height}}px;border:1px lightgray solid;" />
+</div>
+<div id="controls" />
+<!-- Create a div where the graph will take place -->
+<div id="my_dataviz"></div>
+</body>
+</html>

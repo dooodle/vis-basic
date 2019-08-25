@@ -56,6 +56,9 @@ type Bar = struct {
 	IsLogY   bool
 }
 
+type Line = struct {
+}
+
 var serve = flag.String("http", ":8080", "run as http server")
 var queryService = flag.String("qh", "", "url for query service eg http://127.0.0.1:31784")
 
@@ -122,6 +125,35 @@ func main() {
 			vis.Label = label
 		}
 		ScatterPlot(w, vis)
+	})
+
+	http.HandleFunc("/weak/line", func(w http.ResponseWriter, r *http.Request) {
+		//w.Header().Set("Content-Type", "image/svg+xml")
+		log.Println("processing: /weak/line")
+		vis := dummy()
+		r.ParseForm()
+		if e := r.FormValue("e"); e != "" {
+			vis.Relation = e
+		}
+		if x := r.FormValue("x"); x != "" {
+			vis.X = x
+		}
+		if logx := r.FormValue("logx"); logx == "true" {
+			vis.IsLogX = true
+		}
+		if y := r.FormValue("y"); y != "" {
+			vis.Y = y
+		}
+		if logy := r.FormValue("logy"); logy == "true" {
+			vis.IsLogY = true
+		}
+		if c := r.FormValue("c"); c != "" {
+			vis.C = c
+		}
+		if label := r.FormValue("label"); label != "" {
+			vis.Label = label
+		}
+		WeakLinePlot(w, vis)
 	})
 
 	http.HandleFunc("/basic/bubble", func(w http.ResponseWriter, r *http.Request) {
@@ -191,6 +223,22 @@ func main() {
 
 func ScatterPlot(w io.Writer, t basicVis) error {
 	contents, err := ioutil.ReadFile("scatter.svg")
+	if err != nil {
+		return err
+	}
+	tmpl, err := template.New("test").Parse(string(contents))
+	if err != nil {
+		return err
+	}
+	err = tmpl.Execute(w, t)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func WeakLinePlot(w io.Writer, t basicVis) error {
+	contents, err := ioutil.ReadFile("line.svg")
 	if err != nil {
 		return err
 	}
