@@ -57,6 +57,15 @@ type Bar = struct {
 }
 
 type Line = struct {
+	Height   string
+	Width    string
+	Relation string // E
+	Strong   string //k1
+	Weak     string //k2
+	Measure  string
+	Label    string
+	IsLogX   bool
+	IsLogY   bool
 }
 
 var serve = flag.String("http", ":8080", "run as http server")
@@ -73,6 +82,33 @@ func main() {
 
 	http.HandleFunc("/basic/mondial/", func(w http.ResponseWriter, r *http.Request) {
 		var re = regexp.MustCompile(`/basic/mondial/([\w\-]+).csv$`)
+		switch {
+		case re.MatchString(r.URL.Path):
+			matches := re.FindStringSubmatch(r.URL.Path)
+			entity := matches[1]
+			query := fmt.Sprintf("%s/mondial/%s?h=true", *queryService, entity)
+			log.Println("calling", query)
+			resp, err := http.Get(query)
+			if err != nil {
+				log.Println(err)
+				w.WriteHeader(409)
+				return
+			}
+			_, err = io.Copy(w, resp.Body)
+			if err != nil {
+				log.Println(err)
+				w.WriteHeader(409)
+				return
+			}
+			defer resp.Body.Close()
+		default:
+			log.Println("Improper Url: " + r.URL.Path)
+			w.WriteHeader(404)
+		}
+	})
+
+	http.HandleFunc("/weak/mondial/", func(w http.ResponseWriter, r *http.Request) {
+		var re = regexp.MustCompile(`/weak/mondial/([\w\-]+).csv$`)
 		switch {
 		case re.MatchString(r.URL.Path):
 			matches := re.FindStringSubmatch(r.URL.Path)
@@ -130,26 +166,26 @@ func main() {
 	http.HandleFunc("/weak/line", func(w http.ResponseWriter, r *http.Request) {
 		//w.Header().Set("Content-Type", "image/svg+xml")
 		log.Println("processing: /weak/line")
-		vis := dummy()
+		vis := dummyWeakLine()
 		r.ParseForm()
 		if e := r.FormValue("e"); e != "" {
 			vis.Relation = e
 		}
-		if x := r.FormValue("x"); x != "" {
-			vis.X = x
+		if strong := r.FormValue("strong"); strong != "" {
+			vis.Strong = strong
 		}
-		if logx := r.FormValue("logx"); logx == "true" {
-			vis.IsLogX = true
+
+		if weak := r.FormValue("weak"); weak != "" {
+			vis.Weak = weak
 		}
-		if y := r.FormValue("y"); y != "" {
-			vis.Y = y
+
+		if n := r.FormValue("n"); n != "" {
+			vis.Measure = n
 		}
-		if logy := r.FormValue("logy"); logy == "true" {
-			vis.IsLogY = true
-		}
-		if c := r.FormValue("c"); c != "" {
-			vis.C = c
-		}
+
+		// if c := r.FormValue("c"); c != "" {
+		// 	vis.C = c
+		// }
 		if label := r.FormValue("label"); label != "" {
 			vis.Label = label
 		}
@@ -316,6 +352,19 @@ func dummyBar() Bubble {
 		Width:    "700",
 		Relation: "economy",
 		X:        "unemployment",
+		IsLogX:   false,
+		IsLogY:   false,
+	}
+}
+
+func dummyWeakLine() Line {
+	return Line{
+		Height:   "600",
+		Width:    "700",
+		Relation: "country_population",
+		Strong:   "country",
+		Weak:     "year",
+		Measure:  "population",
 		IsLogX:   false,
 		IsLogY:   false,
 	}

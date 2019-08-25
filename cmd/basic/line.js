@@ -16,27 +16,28 @@ function createVis( ) {
               "translate(" + margin.left + "," + margin.top + ")");
 
     //Read the data
-//    d3.csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/5_OneCatSevNumOrdered.csv", function(data) {
-    d3.csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/5_OneCatSevNumOrdered.csv", function(data) {
+    //    d3.csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/5_OneCatSevNumOrdered.csv", function(data) {
+    //    d3.csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/5_OneCatSevNumOrdered.csv", function(data) {
+    d3.csv("mondial/" + relation +".csv", function(data) {        
         // group the data: I want to draw one line per group
         var sumstat = d3.nest() // nest function allows to group the calculation per level of a factor
-            .key(function(d) { return d["name"];})
+            .key(function(d) { return d[strong];})
             .entries(data);
 
         // Add X axis --> it is a date format
         var x = d3.scaleLinear()
-            .domain(d3.extent(data, function(d) { return d["year"]; }))
+            .domain(d3.extent(data, function(d) { return d[weak]; }))
             .range([ 0, width ]);
         svg.append("g")
             .attr("transform", "translate(0," + height + ")")
-            .call(d3.axisBottom(x).ticks(5));
+            .call(d3.axisBottom(x).tickFormat(d3.format("d")).ticks(5));
 
         // Add Y axis
         var y = d3.scaleLinear()
-            .domain([0, d3.max(data, function(d) { return +d["n"]; })])
+            .domain([0, d3.max(data, function(d) { return +d[n]; })])
             .range([ height, 0 ]);
         svg.append("g")
-            .call(d3.axisLeft(y));
+            .call(d3.axisLeft(y).tickFormat(d3.format("d")));
 
         // color palette
         var res = sumstat.map(function(d){ return d.key }) // list of group names
@@ -54,11 +55,18 @@ function createVis( ) {
             .attr("stroke-width", 1.5)
             .attr("d", function(d){
                 return d3.line()
-                    .x(function(d) { return x(d["year"]); })
-                    .y(function(d) { return y(+d["n"]); })
+                    .x(function(d) { return x(d[weak]); })
+                    .y(function(d) { return y(+d[n]); })
                 (d.values)
             })
 
+            .append("text")
+	    .attr("transform", "translate(" + (width+3) + "," + height + ")")
+	    .attr("dy", ".35em")
+	    .attr("text-anchor", "start")
+	    .style("fill", "steelblue")
+	    .text("Close");
+        
     })
 
 }
