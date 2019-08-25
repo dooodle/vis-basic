@@ -132,10 +132,23 @@ function createVis() {
         node.append("text")
             .attr("x",0)
             .attr("y",0)
+            .append("tspan")
+            .attr("x",0)
+            .attr("dy",0)
             .text( function(d) {
                 console.log(d)
+                if (d.key == "root") {
+                    return ""
+                }
+                return d.parent.key
+            })
+            .append("tspan")
+            .attr("x",0)
+            .attr("dy", "1em")
+            .text( function(d) {
                 return d.key
-            });
+            })
+        ;
 
 
     });
