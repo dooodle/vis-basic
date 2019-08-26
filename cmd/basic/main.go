@@ -123,7 +123,7 @@ func main() {
 		case re.MatchString(r.URL.Path):
 			matches := re.FindStringSubmatch(r.URL.Path)
 			entity := matches[1]
-			query := fmt.Sprintf("%s/mondial/%s?h=true", *queryService, entity)
+			query := fmt.Sprintf("%s/mondial/%s?h=true&null=true", *queryService, entity)
 			log.Println("calling", query)
 			resp, err := http.Get(query)
 			if err != nil {
