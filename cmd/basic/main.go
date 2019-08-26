@@ -171,6 +171,33 @@ func main() {
 		}
 	})
 
+	http.HandleFunc("/m2m/mondial/", func(w http.ResponseWriter, r *http.Request) {
+		var re = regexp.MustCompile(`/m2m/mondial/([\w\-]+).csv$`)
+		switch {
+		case re.MatchString(r.URL.Path):
+			matches := re.FindStringSubmatch(r.URL.Path)
+			entity := matches[1]
+			query := fmt.Sprintf("%s/mondial/%s?h=true&null=true", *queryService, entity)
+			log.Println("calling", query)
+			resp, err := http.Get(query)
+			if err != nil {
+				log.Println(err)
+				w.WriteHeader(409)
+				return
+			}
+			_, err = io.Copy(w, resp.Body)
+			if err != nil {
+				log.Println(err)
+				w.WriteHeader(409)
+				return
+			}
+			defer resp.Body.Close()
+		default:
+			log.Println("Improper Url: " + r.URL.Path)
+			w.WriteHeader(404)
+		}
+	})
+
 	http.HandleFunc("/basic/scatter", func(w http.ResponseWriter, r *http.Request) {
 		//w.Header().Set("Content-Type", "image/svg+xml")
 		log.Println("processing: /basic/scatter")
@@ -227,6 +254,35 @@ func main() {
 			vis.Label = label
 		}
 		WeakLinePlot(w, vis)
+	})
+
+	http.HandleFunc("/m2m/chord", func(w http.ResponseWriter, r *http.Request) {
+		//w.Header().Set("Content-Type", "image/svg+xml")
+		log.Println("processing: /m2m/chord")
+		vis := dummyWeakLine()
+		r.ParseForm()
+		// if e := r.FormValue("e"); e != "" {
+		// 	vis.Relation = e
+		// }
+		// if strong := r.FormValue("strong"); strong != "" {
+		// 	vis.Strong = strong
+		// }
+
+		// if weak := r.FormValue("weak"); weak != "" {
+		// 	vis.Weak = weak
+		// }
+
+		// if n := r.FormValue("n"); n != "" {
+		// 	vis.Measure = n
+		// }
+
+		// if c := r.FormValue("c"); c != "" {
+		// 	vis.C = c
+		// }
+		if label := r.FormValue("label"); label != "" {
+			vis.Label = label
+		}
+		M2mChordPlot(w, vis)
 	})
 
 	http.HandleFunc("/o2m/circle", func(w http.ResponseWriter, r *http.Request) {
@@ -333,6 +389,25 @@ func ScatterPlot(w io.Writer, t basicVis) error {
 		return err
 	}
 	err = tmpl.Execute(w, t)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func M2mChordPlot(w io.Writer, t basicVis) error {
+	log.Println("entering M2mChordPlot")
+	contents, err := ioutil.ReadFile("chord.svg")
+	if err != nil {
+		return err
+	}
+	log.Println("%s", string(contents))
+	tmpl, err := template.New("test").Parse(string(contents))
+	if err != nil {
+		return err
+	}
+	err = tmpl.Execute(w, t)
+	log.Println(w)
 	if err != nil {
 		return err
 	}
