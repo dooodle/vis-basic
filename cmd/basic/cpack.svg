@@ -1,6 +1,6 @@
 <html>
 <head>
-  <title>Weak Enrity Line Chart for - {{.Relation}}</title>
+  <title>One to Many Circle Packing Chart for - {{.Relation}}</title>
   <meta charset="utf-8" />
   <link type="text/css" rel="stylesheet" href="basic.css" />
 </head>
