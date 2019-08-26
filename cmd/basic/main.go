@@ -68,6 +68,16 @@ type Line = struct {
 	IsLogY   bool
 }
 
+type O2mCircle = struct {
+	Height   string
+	Width    string
+	Relation string // E
+	One      string //k1
+	Many     string //k2
+	Measure  string
+	Label    string
+}
+
 var serve = flag.String("http", ":8080", "run as http server")
 var queryService = flag.String("qh", "", "url for query service eg http://127.0.0.1:31784")
 
@@ -222,22 +232,22 @@ func main() {
 	http.HandleFunc("/o2m/circle", func(w http.ResponseWriter, r *http.Request) {
 		//w.Header().Set("Content-Type", "image/svg+xml")
 		log.Println("processing: /o2m/circle")
-		vis := dummyWeakLine()
+		vis := dummyO2mCircle()
 		r.ParseForm()
-		// if e := r.FormValue("e"); e != "" {
-		// 	vis.Relation = e
-		// }
-		// if strong := r.FormValue("strong"); strong != "" {
-		// 	vis.Strong = strong
-		// }
+		if e := r.FormValue("e"); e != "" {
+			vis.Relation = e
+		}
+		if one := r.FormValue("one"); one != "" {
+			vis.One = one
+		}
 
-		// if weak := r.FormValue("weak"); weak != "" {
-		// 	vis.Weak = weak
-		// }
+		if many := r.FormValue("many"); many != "" {
+			vis.Many = many
+		}
 
-		// if n := r.FormValue("n"); n != "" {
-		// 	vis.Measure = n
-		// }
+		if n := r.FormValue("n"); n != "" {
+			vis.Measure = n
+		}
 
 		// if c := r.FormValue("c"); c != "" {
 		// 	vis.C = c
@@ -439,6 +449,17 @@ func dummyWeakLine() Line {
 		Measure:  "population",
 		IsLogX:   false,
 		IsLogY:   false,
+	}
+}
+
+func dummyO2mCircle() O2mCircle {
+	return O2mCircle{
+		Height:   "600",
+		Width:    "700",
+		Relation: "airport",
+		One:      "iata_code",
+		Many:     "city",
+		Measure:  "population",
 	}
 }
 

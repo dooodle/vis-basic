@@ -90,14 +90,14 @@ function createVis() {
         .attr("transform", "translate(2,2)");
 
     //Get data
-    d3.csv("mondial/airport.csv", function(error, data) {
+    d3.csv("mondial/"+ relation + ".csv", function(error, data) {
 
         var toplevel = d3.nest()
             .key(function(d) {
-                return d["city"];
+                return d[many];
             })
             .key(function(d) {
-                return d["iata_code"];
+                return d[one];
             })
             .rollup(function(leaves) {
                 return leaves.length;

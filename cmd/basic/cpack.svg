@@ -6,12 +6,10 @@
 </head>
 <script>
 var relation = "{{.Relation}}"  
-var strong = "{{.Strong}}"
-var weak = "{{.Weak}}"
+var one = "{{.One}}"
+var many = "{{.Many}}"
 var n = "{{.Measure}}"
 var label = "{{.Label}}"
-var logX = {{.IsLogX}} 
-var logY = {{.IsLogY}}
 </script>
 <script src="https://d3js.org/d3.v3.min.js"></script>
 <!-- <script src="https://d3js.org/d3.v5.min.js"></script> -->
