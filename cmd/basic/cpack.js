@@ -94,10 +94,10 @@ function createVis() {
 
         var toplevel = d3.nest()
             .key(function(d) {
-                return d[many];
+                return d[one];
             })
             .key(function(d) {
-                return d[one];
+                return d[many];
             })
             .rollup(function(leaves) {
                 return leaves.length;
