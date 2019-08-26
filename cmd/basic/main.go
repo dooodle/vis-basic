@@ -33,6 +33,17 @@ type Scatter = struct {
 	IsLogY   bool
 }
 
+type Chord = struct {
+	Height   string
+	Width    string
+	Relation string // E
+	X        string // a1
+	Y        string // a2
+	C        string // a3
+	Label    string
+	Measure  string
+}
+
 type Bubble = struct {
 	Height   string
 	Width    string
@@ -259,22 +270,23 @@ func main() {
 	http.HandleFunc("/m2m/chord", func(w http.ResponseWriter, r *http.Request) {
 		//w.Header().Set("Content-Type", "image/svg+xml")
 		log.Println("processing: /m2m/chord")
-		vis := dummyWeakLine()
+		vis := dummyM2mChord()
 		r.ParseForm()
-		// if e := r.FormValue("e"); e != "" {
-		// 	vis.Relation = e
-		// }
-		// if strong := r.FormValue("strong"); strong != "" {
-		// 	vis.Strong = strong
-		// }
+		if e := r.FormValue("e"); e != "" {
+			vis.Relation = e
+		}
 
-		// if weak := r.FormValue("weak"); weak != "" {
-		// 	vis.Weak = weak
-		// }
+		if x := r.FormValue("x"); x != "" {
+			vis.X = x
+		}
 
-		// if n := r.FormValue("n"); n != "" {
-		// 	vis.Measure = n
-		// }
+		if y := r.FormValue("y"); y != "" {
+			vis.Y = y
+		}
+
+		if n := r.FormValue("n"); n != "" {
+			vis.Measure = n
+		}
 
 		// if c := r.FormValue("c"); c != "" {
 		// 	vis.C = c
@@ -487,6 +499,17 @@ func dummy() Scatter {
 		Y:        "unemployment",
 		IsLogX:   false,
 		IsLogY:   false,
+	}
+}
+
+func dummyM2mChord() Chord {
+	return Chord{
+		Height:   "600",
+		Width:    "700",
+		Relation: "river",
+		X:        "sea",
+		Y:        "lake",
+		Measure:  "area",
 	}
 }
 
