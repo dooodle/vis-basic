@@ -17,6 +17,7 @@ spec:
       containers:
       - name: d3
         image: dooodle/vis-d3:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 8080
         env:
