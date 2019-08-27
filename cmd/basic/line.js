@@ -1,11 +1,23 @@
-//based on example at https://www.d3-graph-gallery.com/graph/line_several_group.html
-//<script>
+//based on https://codepen.io/zakariachowdhury/pen/JEmjwq
 function createVis( ) {
     // set the dimensions and margins of the graph
     var margin = {top: 10, right: 30, bottom: 30, left: 60},
         width = 460 - margin.left - margin.right,
         height = 400 - margin.top - margin.bottom;
 
+    var lineOpacity = "0.25";
+    var lineOpacityHover = "0.85";
+    var otherLinesOpacityHover = "0.1";
+    var lineStroke = "1.5px";
+    var lineStrokeHover = "2.5px";
+    // var width = 500;
+    // var height = 300;
+    // var margin = 50;
+    var duration = 250;
+    var circleOpacity = '0.85';
+    var circleOpacityOnLineHover = "0.25"
+    var circleRadius = 3;
+    var circleRadiusHover = 6;
     // append the svg object to the body of the page
     var svg = d3.select("#my_dataviz")
         .append("svg")
@@ -24,10 +36,13 @@ function createVis( ) {
             .key(function(d) { return d[strong];})
             .entries(data);
 
-        // Add X axis --> it is a date format
+        var res = sumstat.map(function(d){ return d.key }) // list of group names
+
+        //Add X axis --> it is a date format
         var x = d3.scaleLinear()
             .domain(d3.extent(data, function(d) { return d[weak]; }))
             .range([ 0, width ]);
+
         svg.append("g")
             .attr("transform", "translate(0," + height + ")")
             .call(d3.axisBottom(x).tickFormat(d3.format("d")).ticks(5));
@@ -40,126 +55,102 @@ function createVis( ) {
             .call(d3.axisLeft(y).tickFormat(d3.format("d")));
 
         // color palette
-        var res = sumstat.map(function(d){ return d.key }) // list of group names
-        var color = d3.scaleOrdinal()
-            .domain(res)
-            .range(['#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00','#ffff33','#a65628','#f781bf','#999999'])
+        var color = d3.scaleOrdinal(d3.schemeCategory10);
+        var line = d3.line()
+            .x(d => x(d[weak]))
+            .y(d => y(d[strong]));
 
-        // Draw the line
-        svg.selectAll(".line")
-            .data(sumstat)
-            .enter()
-            .append("path")
-            .attr("fill", "none")
-            .attr("stroke", function(d){ return color(d.key) })
-            .attr("stroke-width", 1.5)
-            .attr("d", function(d){
+        let lines = svg.append('g')
+            .attr('class', 'lines');
+
+        lines.selectAll('.line-group')
+            .data(sumstat).enter()
+            .append('g')
+            .attr('class', 'line-group')  
+            .on("mouseover", function(d, i) {
+                svg.append("text")
+                    .attr("class", "title-text")
+                    .style("fill", color(i))        
+                    .text(d.name)
+                    .attr("text-anchor", "middle")
+                    .attr("x", (width-margin)/2)
+                    .attr("y", 5);
+            })
+            .on("mouseout", function(d) {
+                svg.select(".title-text").remove();
+            })
+            .append('path')
+            .attr('class', 'line')  
+            .attr('d', function(d){
                 return d3.line()
                     .x(function(d) { return x(d[weak]); })
                     .y(function(d) { return y(+d[n]); })
                 (d.values)
             })
+            .style('stroke', (d, i) => color(i))
+            .style('opacity', lineOpacity)
+            .on("mouseover", function(d) {
+                d3.selectAll('.line')
+		    .style('opacity', otherLinesOpacityHover);
+                d3.selectAll('.circle')
+		    .style('opacity', circleOpacityOnLineHover);
+                d3.select(this)
+                    .style('opacity', lineOpacityHover)
+                    .style("stroke-width", lineStrokeHover)
+                    .style("cursor", "pointer");
+            })
+            .on("mouseout", function(d) {
+                d3.selectAll(".line")
+		    .style('opacity', lineOpacity);
+                d3.selectAll('.circle')
+		    .style('opacity', circleOpacity);
+                d3.select(this)
+                    .style("stroke-width", lineStroke)
+                    .style("cursor", "none");
+            });
 
-            .append("text")
-	    .attr("transform", "translate(" + (width+3) + "," + height + ")")
-	    .attr("dy", ".35em")
-	    .attr("text-anchor", "start")
-	    .style("fill", "steelblue")
-	    .text("Close");
+
         
-    })
-
-}
-
-
-
-
-
-
-function createVisOld() {
-    d3.csv("mondial/" + relation +".csv", d => {
-	if (
-	    logX && Number(d[scatterX]) <=0 || 
-	        logY && Number(d[scatterY]) <=0 
-	){
-	    return undefined
-	}
-        return d
-    })
-        .then(data => {overallVis(data)}) // v5        
-    function overallVis(incomingData) {
-        var maxX = d3.max(incomingData, d => Number(d[scatterX]))
-        var minX = d3.min(incomingData, d => Number(d[scatterX]))
-        var maxY = d3.max(incomingData, d => Number(d[scatterY]))
-        var minY = d3.min(incomingData, d => Number(d[scatterY])) 
-        var yScale = (logY) ? d3.scaleLog().domain([minY,maxY]).range([460,0]) : d3.scaleLinear().domain([minY,maxY]).range([460,0])
-        var xScale = (logX) ? d3.scaleLog().domain([minX,maxX]).range([20,480]) :  d3.scaleLinear().domain([minX,maxX]).range([20,480]) 
-        
-        var cScale
-        if (scatterC) {
-  	    var maxC = d3.max(incomingData, d => Number(d[scatterC]))
-  	    var minC = d3.min(incomingData, d => Number(d[scatterC]))	
-  	    cScale = d3.scaleQuantize().domain([minC, maxC]).range(colorbrewer.Set2[4]);
-        }
-        
-        d3.select("svg")
-            .selectAll("g")
-            .data(incomingData)
-            .enter()
+        lines.selectAll("circle-group")
+            .data(sumstat).enter()
             .append("g")
-            .attr("class", "overallG")      
-        var countries = d3.selectAll("g.overallG");                            
-        countries
+            .style("fill", (d, i) => color(i))
+            .selectAll("circle")
+            .data(d => d.values).enter()
+            .append("g")
+            .attr("class", "circle")  
+            .on("mouseover", function(d) {
+                d3.select(this)     
+                    .style("cursor", "pointer")
+                    .append("text")
+                    .attr("class", "text")
+                    .text(`${d[strong]}`)
+                    .attr("x", d => x(d[weak]) + 5)
+                    .attr("y", d => y(d[n]) - 10);
+            })
+            .on("mouseout", function(d) {
+                d3.select(this)
+                    .style("cursor", "none")  
+                    .transition()
+                    .duration(duration)
+                    .selectAll(".text").remove();
+            })
             .append("circle")
-            .attr("r", 2)
-            .attr("cx", d => xScale(d[scatterX]))
-            .attr("cy", d => yScale(d[scatterY]))
-        
-        if (label) {	
-            countries
-                .append("text")
-                .attr("x", d => xScale(d[scatterX]))
-                .attr("y", d => yScale(d[scatterY]))
-                .text(d => d[label])
- 	}
-	if (scatterC) {
-	    var countries = d3.selectAll("g.overallG circle");                            
-  	    countries.attr("fill", d => cScale(d[scatterC]))
-  	    
-            var legend = d3.legendColor()
-  	        .labelFormat(d3.format(".2f"))
-  	        .labelOffset(60) // this number should be determined based on length of label text
-  	        .title(scatterC)
-  	        .scale(cScale)
-  	    ;
-
-	    d3.select("svg")
-	        .append("g")
-	        .attr("class","legend")
-	        .attr("transform", "translate(550,350)")
-	        .call(legend);
-	}
-
-        xAxis = d3.axisBottom().scale(xScale).ticks(8,".1f")
- 	d3.select("svg").append("g").attr("id","xAxis")
- 	    .attr("transform", "translate(0,460)")
- 	    .call(xAxis)
- 	    .append("text")
- 	    .attr("x","250")
- 	    .attr("y","10")
-            .attr("transform","translate(0,50)")        
- 	    .text(scatterX)
- 	
-        yAxis = d3.axisRight()
-            .scale(yScale)
-            .ticks(8,".1f")
-            .tickPadding("10")
- 	d3.select("svg").append("g").attr("id","yAxis")
- 	    .attr("transform", "translate(480,0)") 
- 	    .call(yAxis)   
- 	    .append("text")
- 	    .attr("transform", "rotate(90,-100,110) translate(0,-50)")
- 	    .text(scatterY)	 
-    }
+            .attr("cx", d => x(d[weak]))
+            .attr("cy", d => y(d[n]))
+            .attr("r", circleRadius)
+            .style('opacity', circleOpacity)
+            .on("mouseover", function(d) {
+                d3.select(this)
+                    .transition()
+                    .duration(duration)
+                    .attr("r", circleRadiusHover);
+            })
+            .on("mouseout", function(d) {
+                d3.select(this) 
+                    .transition()
+                    .duration(duration)
+                    .attr("r", circleRadius);  
+            });  
+    })
 }
-
