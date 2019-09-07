@@ -288,9 +288,6 @@ func main() {
 			vis.Measure = n
 		}
 
-		// if c := r.FormValue("c"); c != "" {
-		// 	vis.C = c
-		// }
 		if label := r.FormValue("label"); label != "" {
 			vis.Label = label
 		}
@@ -529,7 +526,7 @@ func dummyBubble() Bubble {
 func dummyBar() Bubble {
 	return Bubble{
 		Height:   "600",
-		Width:    "700",
+		Width:    "2100",
 		Relation: "economy",
 		X:        "unemployment",
 		IsLogX:   false,
