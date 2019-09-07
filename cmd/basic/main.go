@@ -129,7 +129,7 @@ func main() {
 	})
 
 	http.HandleFunc("/basic2/mondial/", func(w http.ResponseWriter, r *http.Request) {
-		var re = regexp.MustCompile(`/basic/mondial/([\w\-]+).csv$`)
+		var re = regexp.MustCompile(`/basic2/mondial/([\w\-]+).csv$`)
 		switch {
 		case re.MatchString(r.URL.Path):
 			matches := re.FindStringSubmatch(r.URL.Path)
