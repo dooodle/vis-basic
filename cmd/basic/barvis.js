@@ -58,7 +58,7 @@ function createVis() {
  	    .call(axis)
  	    .append("text")
  	    .attr("x","350")
- 	    .attr("y",480 + 30)
+ 	    .attr("y",480 + 80)
  	    .text(scatterX)
     }
 }
