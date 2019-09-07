@@ -128,6 +128,33 @@ func main() {
 		}
 	})
 
+	http.HandleFunc("/basic2/mondial/", func(w http.ResponseWriter, r *http.Request) {
+		var re = regexp.MustCompile(`/basic/mondial/([\w\-]+).csv$`)
+		switch {
+		case re.MatchString(r.URL.Path):
+			matches := re.FindStringSubmatch(r.URL.Path)
+			entity := matches[1]
+			query := fmt.Sprintf("%s/mondial/%s?h=true&null=true", *queryService, entity)
+			log.Println("calling", query)
+			resp, err := http.Get(query)
+			if err != nil {
+				log.Println(err)
+				w.WriteHeader(409)
+				return
+			}
+			_, err = io.Copy(w, resp.Body)
+			if err != nil {
+				log.Println(err)
+				w.WriteHeader(409)
+				return
+			}
+			defer resp.Body.Close()
+		default:
+			log.Println("Improper Url: " + r.URL.Path)
+			w.WriteHeader(404)
+		}
+	})
+
 	http.HandleFunc("/weak/mondial/", func(w http.ResponseWriter, r *http.Request) {
 		var re = regexp.MustCompile(`/weak/mondial/([\w\-]+).csv$`)
 		switch {
@@ -355,7 +382,7 @@ func main() {
 		BubblePlot(w, vis)
 	})
 
-	http.HandleFunc("/basic/bar", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/basic2/bar", func(w http.ResponseWriter, r *http.Request) {
 
 		vis := dummyBar()
 		r.ParseForm()
