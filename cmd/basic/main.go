@@ -526,7 +526,7 @@ func dummyBubble() Bubble {
 func dummyBar() Bubble {
 	return Bubble{
 		Height:   "600",
-		Width:    "2100",
+		Width:    "1400",
 		Relation: "economy",
 		X:        "unemployment",
 		IsLogX:   false,
