@@ -53,7 +53,7 @@ function createVis() {
                 })
  	}
 
-        axis = d3.axisRight().scale(axisScale).ticks(8,".1f")
+        axis = d3.axisRight().scale(axisScale).ticks(8,"~s").tickPadding(10)
  	d3.select("svg").append("g").attr("id","axis")
  	    .call(axis)
  	    .append("text")
