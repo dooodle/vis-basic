@@ -1,6 +1,6 @@
 <html>
   <head>
-    <title>Weak Enrity Line Chart for - {{.Relation}}</title>
+    <title>Chord Chart for - {{.Relation}}</title>
     <meta charset="utf-8" />
     <link type="text/css" rel="stylesheet" href="chords.css" />
   </head>

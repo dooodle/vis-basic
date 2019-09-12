@@ -1,4 +1,9 @@
 //based on https://codepen.io/zakariachowdhury/pen/JEmjwq
+//MIT License
+
+//NB the majority of the code is based on the MIT Licensed
+//example code, with some changes to allow the rendering
+//of a matched image.
 function createVis( ) {
     // set the dimensions and margins of the graph
     var margin = {top: 10, right: 30, bottom: 30, left: 60},
@@ -10,9 +15,6 @@ function createVis( ) {
     var otherLinesOpacityHover = "0.1";
     var lineStroke = "1.5px";
     var lineStrokeHover = "2.5px";
-    // var width = 500;
-    // var height = 300;
-    // var margin = 50;
     var duration = 250;
     var circleOpacity = '0.85';
     var circleOpacityOnLineHover = "0.25"
@@ -27,9 +29,6 @@ function createVis( ) {
         .attr("transform",
               "translate(" + margin.left + "," + margin.top + ")");
 
-    //Read the data
-    //    d3.csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/5_OneCatSevNumOrdered.csv", function(data) {
-    //    d3.csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/5_OneCatSevNumOrdered.csv", function(data) {
     d3.csv("mondial/" + relation +".csv", function(data) {        
         // group the data: I want to draw one line per group
         var sumstat = d3.nest() // nest function allows to group the calculation per level of a factor

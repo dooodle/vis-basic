@@ -1,6 +1,6 @@
 //MIT License
 //source https://github.com/sghall/d3-chord-diagrams/blob/master/coffee-from-files.html
-
+//this code is used under the MIT License and was written by sghall
 function drawChords (matrix, mmap) {
         var w = 980, h = 800, r1 = h / 2, r0 = r1 - 100;
 
