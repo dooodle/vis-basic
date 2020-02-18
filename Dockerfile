@@ -1,4 +1,4 @@
 FROM scratch
 COPY server /
 COPY cmd/basic/ /
-CMD ["/server","-qh","http://178.62.59.88:31784"]
+CMD ["/server","-qh","http://64.227.42.67:31397"]
